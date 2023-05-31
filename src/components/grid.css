@@ -1,0 +1,14 @@
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  width: var(--gridwidth);
+  height: var(--gridheight);
+  border: 1px solid black;
+}
+.gridcontainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
