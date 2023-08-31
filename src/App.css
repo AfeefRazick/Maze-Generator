@@ -5,4 +5,10 @@
 }
 html {
   box-sizing: border-box;
+  background-color: black;
+}
+h1 {
+  margin-bottom: 20px;
+  color: white;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }

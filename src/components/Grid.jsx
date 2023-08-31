@@ -1,16 +1,8 @@
-import { React, useState } from "react";
+/* eslint react/prop-types: 0 */
 import Cell from "./Cell";
 import "./grid.css";
-import { v4 as uuidv4 } from "uuid";
 import { cellsArray } from "./Cell";
-
-const asyncdelay = async function (ms) {
-  await new Promise((resolve) =>
-    setTimeout(() => {
-      resolve();
-    }, ms)
-  );
-};
+import { useState } from "react";
 
 const generateGrid = (gridX, gridY) => {
   const gridArray = [];
@@ -22,19 +14,8 @@ const generateGrid = (gridX, gridY) => {
   return gridArray;
 };
 
-const mazeGenerator = async () => {
-  // setcells(cellsArray);
-  const startnode = cellsArray[1];
-  console.log(startnode);
-  await generateMaze(startnode, 5, startnode);
-  console.log(cellsArray);
-};
-
 const generateMaze = async (prevnode, sec, prenode) => {
-  // setcells(cellsArray);
-  // await asyncdelay(100);
   prevnode.visited = true;
-  console.log(prevnode);
 
   let node = document.getElementById(`cell-${prevnode.ID}`);
 
@@ -47,7 +28,6 @@ const generateMaze = async (prevnode, sec, prenode) => {
   } else if (prenode.ID - prevnode.ID < -19) {
     node.style.borderLeft = "white";
   }
-  // node.style.backgroundColor = `rgb(${sec},128,128)`;
 
   let neighbours = prevnode.neighbourIDs.filter(
     (neighbour) => neighbour != false
@@ -55,15 +35,29 @@ const generateMaze = async (prevnode, sec, prenode) => {
   neighbours = neighbours.sort(function () {
     return Math.random() - 0.5;
   });
-  // console.log(neighbours);
-  await neighbours.forEach(async (neighbou) => {
+
+  neighbours.forEach(async (neighbou) => {
     if (cellsArray[neighbou].visited === false) {
-      await generateMaze(cellsArray[neighbou], (sec * 2) % 250, prevnode);
+      generateMaze(cellsArray[neighbou], (sec * 2) % 250, prevnode);
     }
   });
 };
 
 export default function Grid({ Gridx, Gridy }) {
+  const [rerender, setRerender] = useState(0);
+
+  const mazeGenerator = async () => {
+    const nodeList = document.getElementsByClassName("cell");
+    for (let i = 0; i < nodeList.length; i++) {
+      nodeList[i].removeAttribute("style");
+    }
+    setRerender((prev) => {
+      return prev + 1;
+    });
+    const startnode = cellsArray[1];
+    await generateMaze(startnode, 5, startnode);
+  };
+
   let cellwidth = 22;
   document.documentElement.style.setProperty("--cellwidth", `${cellwidth}px`);
   document.documentElement.style.setProperty(
@@ -75,10 +69,9 @@ export default function Grid({ Gridx, Gridy }) {
     `${cellwidth * Gridy + 2}px` //+2 is for border space//
   );
 
-  // const [cells, setcells] = useState(cellsArray);
-
   return (
     <div className="gridcontainer">
+      <h1>Generate maze using DFS algorithm</h1>
       <div className="grid">
         {generateGrid(Gridx, Gridy).map((cellCordinates) => {
           return (
@@ -93,10 +86,11 @@ export default function Grid({ Gridx, Gridy }) {
           );
         })}
       </div>
-      <button className="generatemaze" onClick={mazeGenerator}>
+
+      <button className="button-56" onClick={mazeGenerator} role="button">
         Generate Maze
       </button>
-      {/* {console.log(cellsArray)} */}
+      <p>This is your {rerender} maze</p>
     </div>
   );
 }

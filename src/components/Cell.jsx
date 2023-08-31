@@ -1,4 +1,4 @@
-import React from "react";
+/* eslint react/prop-types: 0 */
 import "./cell.css";
 
 class Celltemplate {
